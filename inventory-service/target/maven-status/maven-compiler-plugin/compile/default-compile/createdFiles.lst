@@ -1,0 +1,5 @@
+com\pankajproduct\inventory_service\service\InventoryService.class
+com\pankajproduct\inventory_service\model\Inventory.class
+com\pankajproduct\inventory_service\controller\InventoryController.class
+com\pankajproduct\inventory_service\InventoryServiceApplication.class
+com\pankajproduct\inventory_service\repository\InventoryRepository.class

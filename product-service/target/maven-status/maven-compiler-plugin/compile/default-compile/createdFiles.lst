@@ -1,0 +1,10 @@
+com\pankajproduct\product_service\ProductServiceApplication.class
+com\pankajproduct\product_service\repository\ProductRepository.class
+com\pankajproduct\product_service\controller\ProductController.class
+com\pankajproduct\product_service\dto\ProductResponse.class
+com\pankajproduct\product_service\service\ProductService.class
+com\pankajproduct\product_service\dto\ProductRequest.class
+com\pankajproduct\product_service\dto\ProductRequest$ProductRequestBuilder.class
+com\pankajproduct\product_service\model\Product$ProductBuilder.class
+com\pankajproduct\product_service\model\Product.class
+com\pankajproduct\product_service\dto\ProductResponse$ProductResponseBuilder.class
