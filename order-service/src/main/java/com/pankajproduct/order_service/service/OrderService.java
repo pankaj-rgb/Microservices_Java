@@ -3,10 +3,12 @@ package com.pankajproduct.order_service.service;
 import com.pankajproduct.order_service.dto.InventoryResponse;
 import com.pankajproduct.order_service.dto.OrderLineItemsDto;
 import com.pankajproduct.order_service.dto.OrderRequest;
+import com.pankajproduct.order_service.event.OrderPlacedEvent;
 import com.pankajproduct.order_service.model.Order;
 import com.pankajproduct.order_service.model.OrderLineItems;
 import com.pankajproduct.order_service.respository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +22,11 @@ import java.util.UUID;
 @Transactional
 public class OrderService {
 
+    //for observation we are using micrometer
+//    private final ObservationRegistry observationRegistry;
+
+    //for kafka template
+    private final KafkaTemplate<String, OrderPlacedEvent> kafkaTemplate;
     private final OrderRepository orderRepository;
     //private final WebClient webClient; //for synchronous call
     private final WebClient.Builder webClientBuilder;
@@ -30,6 +37,9 @@ public class OrderService {
                 .stream()
                 .map(this::mapToDto)
                 .toList();
+
+        //call inventory service and place order if product is in stock
+
         order.setOrderLineItemsList(orderLineItems);
         List<String> skuCodes= order.getOrderLineItemsList().stream()
                                 .map(OrderLineItems::getSkuCode).toList();
@@ -52,6 +62,7 @@ public class OrderService {
         boolean allProductInStock=Arrays.stream(inventoryResponseArray).allMatch(InventoryResponse::isInStock);
        if(allProductInStock) {
            orderRepository.save(order);
+           kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getOrderNumber()));
            return "order placed successfully";
        }
        else {
